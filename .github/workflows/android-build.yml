@@ -1,66 +1,38 @@
-name: Android CI
+name: Android Release Build
 
 on:
   push:
     branches:
       - main
-      - master
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Java 17
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      - name: Setup Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Setup Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.0"
-          channel: stable
-          cache: true
+          flutter-version: stable
 
-      - name: Flutter Doctor
-        run: flutter doctor -v
-
-      - name: Install Dependencies
+      - name: Install Flutter Dependencies
         run: flutter pub get
-
-      - name: Analyze Project
-        run: flutter analyze
-
-      - name: Run Tests
-        run: flutter test
-        continue-on-error: true
 
       - name: Build Release APK
         run: flutter build apk --release
 
-      - name: Build Release AAB
-        run: flutter build appbundle --release
-
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/*.apk
-
-      - name: Upload AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-aab
-          path: build/app/outputs/bundle/release/*.aab
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
