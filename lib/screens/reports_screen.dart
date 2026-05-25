@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../vendor/chart.dart';
 import '../providers/app_provider.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/bottom_nav.dart';
-
-import 'package:flutter/material.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -30,7 +26,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
     return Scaffold(
       body: Consumer<AppProvider>(
         builder: (context, appProvider, child) {
-          return GradientBackground(
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
+              ),
+            ),
             child: SafeArea(
               child: Column(
                 children: [
@@ -97,11 +100,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 width: 100,
                 padding: const EdgeInsets.all(12),
                 backgroundColor: isSelected
-                    ?  Color(0xFF00D4AA).withOpacity(0.2)
+                    ? const Color(0xFF00D4AA).withOpacity(0.2)
                     : null,
                 border: Border.all(
                   color: isSelected
-                      ?  Color(0xFF00D4AA).withOpacity(0.3)
+                      ? const Color(0xFF00D4AA).withOpacity(0.3)
                       : Colors.white.withOpacity(0.1),
                 ),
                 child: Column(
@@ -110,7 +113,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     Icon(
                       report['icon'] as IconData,
                       color: isSelected
-                          ?  Color(0xFF00D4AA)
+                          ? const Color(0xFF00D4AA)
                           : Colors.white.withOpacity(0.6),
                       size: 24,
                     ),
@@ -121,7 +124,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         fontSize: 12,
                         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                         color: isSelected
-                            ?  Color(0xFF00D4AA)
+                            ? const Color(0xFF00D4AA)
                             : Colors.white.withOpacity(0.6),
                       ),
                     ),
@@ -235,8 +238,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
     );
   }
 
-  
-Widget _buildExpenseBreakdown(AppProvider app) {
+  Widget _buildExpenseBreakdown(AppProvider app) {
     final fuelCost = app.totalFuelCost;
     final maintenanceCost = app.totalMaintenanceCost;
     final total = fuelCost + maintenanceCost;
@@ -263,29 +265,18 @@ Widget _buildExpenseBreakdown(AppProvider app) {
           SizedBox(
             height: 180,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SimpleSimplePieChart(
-                  value: fuelPercentage,
+                _buildPieSlice(
+                  value: fuelCost,
                   title: '${fuelPercentage.toStringAsFixed(1)}%',
-                  radius: 60,
                   color: const Color(0xFFFFA502),
-                  titleStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
                 ),
-                SimpleSimplePieChart(
-                  value: maintenancePercentage,
+                const SizedBox(width: 20),
+                _buildPieSlice(
+                  value: maintenanceCost,
                   title: '${maintenancePercentage.toStringAsFixed(1)}%',
-                  radius: 60,
                   color: const Color(0xFF74B9FF),
-                  titleStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
                 ),
               ],
             ),
@@ -294,21 +285,52 @@ Widget _buildExpenseBreakdown(AppProvider app) {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildLegendItem(
-                'Fuel',
-                const Color(0xFFFFA502),
-                '\$${fuelCost.toStringAsFixed(0)}',
-              ),
+              _buildLegendItem('Fuel', const Color(0xFFFFA502), '\$${fuelCost.toStringAsFixed(0)}'),
               const SizedBox(width: 24),
-              _buildLegendItem(
-                'Maintenance',
-                const Color(0xFF74B9FF),
-                '\$${maintenanceCost.toStringAsFixed(0)}',
-              ),
+              _buildLegendItem('Maintenance', const Color(0xFF74B9FF), '\$${maintenanceCost.toStringAsFixed(0)}'),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPieSlice({
+    required double value,
+    required String title,
+    required Color color,
+  }) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.3),
+            shape: BoxShape.circle,
+            border: Border.all(color: color, width: 2),
+          ),
+          child: Center(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          '\$${value.toStringAsFixed(0)}',
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.white.withOpacity(0.7),
+          ),
+        ),
+      ],
     );
   }
 
@@ -460,9 +482,9 @@ Widget _buildExpenseBreakdown(AppProvider app) {
     );
   }
 
-  
-Widget _buildFuelReport(AppProvider app) {
+  Widget _buildFuelReport(AppProvider app) {
     final weeklyData = app.getWeeklyFuelConsumption();
+    final entries = weeklyData.entries.toList();
 
     return Column(
       children: [
@@ -482,14 +504,20 @@ Widget _buildFuelReport(AppProvider app) {
               const SizedBox(height: 20),
               SizedBox(
                 height: 200,
-                child: Center(
-                  child: Text(
-                    'Fuel trend chart loaded',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                    ),
-                  ),
-                ),
+                child: entries.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No fuel data available',
+                          style: TextStyle(color: Colors.white54),
+                        ),
+                      )
+                    : CustomPaint(
+                        size: const Size(double.infinity, 200),
+                        painter: _LineChartPainter(
+                          data: entries.map((e) => e.value).toList(),
+                          labels: entries.map((e) => e.key).toList(),
+                        ),
+                      ),
               ),
             ],
           ),
@@ -844,4 +872,93 @@ Widget _buildFuelReport(AppProvider app) {
       ],
     );
   }
+}
+
+class _LineChartPainter extends CustomPainter {
+  final List<double> data;
+  final List<String> labels;
+
+  _LineChartPainter({required this.data, required this.labels});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (data.isEmpty) return;
+
+    final paint = Paint()
+      ..color = const Color(0xFF00D4AA)
+      ..strokeWidth = 3
+      ..style = PaintingStyle.stroke;
+
+    final fillPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          const Color(0xFF00D4AA).withOpacity(0.3),
+          const Color(0xFF00D4AA).withOpacity(0.0),
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..style = PaintingStyle.fill;
+
+    final maxValue = data.reduce((a, b) => a > b ? a : b);
+    final minValue = data.reduce((a, b) => a < b ? a : b);
+    final range = maxValue == minValue ? 1 : maxValue - minValue;
+
+    final points = <Offset>[];
+    for (int i = 0; i < data.length; i++) {
+      final x = (i / (data.length - 1)) * size.width;
+      final y = size.height - ((data[i] - minValue) / range) * (size.height - 40) - 20;
+      points.add(Offset(x, y));
+    }
+
+    // Draw fill
+    final fillPath = Path();
+    fillPath.moveTo(points.first.dx, size.height);
+    for (final point in points) {
+      fillPath.lineTo(point.dx, point.dy);
+    }
+    fillPath.lineTo(points.last.dx, size.height);
+    fillPath.close();
+    canvas.drawPath(fillPath, fillPaint);
+
+    // Draw line
+    final linePath = Path();
+    linePath.moveTo(points.first.dx, points.first.dy);
+    for (int i = 1; i < points.length; i++) {
+      linePath.lineTo(points[i].dx, points[i].dy);
+    }
+    canvas.drawPath(linePath, paint);
+
+    // Draw dots
+    final dotPaint = Paint()
+      ..color = const Color(0xFF00D4AA)
+      ..style = PaintingStyle.fill;
+
+    final dotStrokePaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    for (final point in points) {
+      canvas.drawCircle(point, 4, dotPaint);
+      canvas.drawCircle(point, 4, dotStrokePaint);
+    }
+
+    // Draw labels
+    final textStyle = TextStyle(
+      color: Colors.white.withOpacity(0.5),
+      fontSize: 10,
+    );
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
+
+    for (int i = 0; i < labels.length && i < data.length; i++) {
+      textPainter.text = TextSpan(text: labels[i], style: textStyle);
+      textPainter.layout();
+      final x = (i / (data.length - 1)) * size.width - textPainter.width / 2;
+      textPainter.paint(canvas, Offset(x, size.height - 16));
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
