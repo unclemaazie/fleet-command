@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 /// Simple Bar Chart implementation - replaces fl_chart BarChart
 class SimpleBarChart extends StatelessWidget {
-  final List<BarData> data;
-  final double maxY;
-  final Color barColor;
+  final List<BarData>? data;
+  final double? maxY;
+  final Color? barColor;
   final Color? backgroundColor;
 
   const SimpleSimpleBarChart({
@@ -179,9 +179,9 @@ class LineData {
 }
 
 class _LineChartPainter extends CustomPainter {
-  final List<LineData> data;
-  final double maxY;
-  final List<Color> gradientColors;
+  final List<LineData>? data;
+  final double? maxY;
+  final List<Color>? gradientColors;
 
   _LineChartPainter({
     required this.data,
@@ -276,7 +276,7 @@ class _LineChartPainter extends CustomPainter {
 
 /// Simple Pie Chart implementation
 class SimplePieChart extends StatelessWidget {
-  final List<PieData> data;
+  final List<PieData>? data;
 
   const SimpleSimplePieChart({
     super.key,
