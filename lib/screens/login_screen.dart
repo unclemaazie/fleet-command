@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import '../vendor/provider.dart';
+import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/glass_card.dart';
-
-import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -56,12 +53,18 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GradientBackground(
-        colors: [
-          const Color(0xFF0A0A0F),
-          const Color(0xFF1A1A2E),
-          const Color(0xFF16213E),
-        ],
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF0A0A0F),
+              Color(0xFF1A1A2E),
+              Color(0xFF16213E),
+            ],
+          ),
+        ),
         child: SafeArea(
           child: FadeTransition(
             opacity: _fadeAnimation,
@@ -83,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF00D4AA).withOpacity(0.3),
+                            color: Color(0xFF00D4AA).withOpacity(0.3),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                           ),
@@ -225,14 +228,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               color: const Color(0xFFFF4757).withOpacity(0.3),
                             ),
                           ),
-                          child: Row(
+                          child: const Row(
                             children: [
-                              const Icon(Icons.error_outline, color: Color(0xFFFF4757), size: 18),
-                              const SizedBox(width: 8),
+                              Icon(Icons.error_outline, color: Color(0xFFFF4757), size: 18),
+                              SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  auth.error!,
-                                  style: const TextStyle(
+                                  'Invalid credentials. Please try again.',
+                                  style: TextStyle(
                                     color: Color(0xFFFF4757),
                                     fontSize: 13,
                                   ),
