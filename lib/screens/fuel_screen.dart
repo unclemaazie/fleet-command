@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import '../vendor/provider.dart';
-import '../vendor/intl.dart';
+import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/fuel_record_model.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/bottom_nav.dart';
 import '../widgets/animated_list_item.dart';
-
-import 'package:flutter/material.dart';
 
 class FuelScreen extends StatefulWidget {
   const FuelScreen({super.key});
@@ -39,7 +35,14 @@ class _FuelScreenState extends State<FuelScreen> {
               ? appProvider.fuelRecords
               : appProvider.getFuelRecordsByTruck(_selectedTruckId);
 
-          return GradientBackground(
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
+              ),
+            ),
             child: SafeArea(
               child: Column(
                 children: [
@@ -59,7 +62,7 @@ class _FuelScreenState extends State<FuelScreen> {
                                 color: Colors.white,
                               ),
                             ),
-                            GlassIconButton(
+                            _GlassIconButton(
                               onPressed: () => _showAddFuelDialog(context, appProvider),
                               icon: Icons.add,
                               iconColor: const Color(0xFF00D4AA),
@@ -176,7 +179,7 @@ class _FuelScreenState extends State<FuelScreen> {
                                         ),
                                       ),
                                       Text(
-                                        DateFormat('MMM d, yyyy HH:mm').format(record.purchaseDate),
+                                        _formatDate(record.purchaseDate),
                                         style: TextStyle(
                                           fontSize: 11,
                                           color: Colors.white.withOpacity(0.4),
@@ -301,7 +304,7 @@ class _FuelScreenState extends State<FuelScreen> {
     final totalLiters = fuelRecords.fold<double>(0, (sum, r) => sum + r.amountLiters);
     final totalCost = fuelRecords.fold<double>(0, (sum, r) => sum + r.totalCost);
     final avgCostPerLiter = fuelRecords.isEmpty
-        ? 0
+        ? 0.0
         : totalCost / totalLiters;
 
     return GlassCard(
@@ -390,8 +393,18 @@ class _FuelScreenState extends State<FuelScreen> {
     );
   }
 
+  String _formatDate(DateTime date) {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    final month = months[date.month - 1];
+    final hour = date.hour.toString().padLeft(2, '0');
+    final minute = date.minute.toString().padLeft(2, '0');
+    return '$month ${date.day}, ${date.year} $hour:$minute';
+  }
+
   void _showAddFuelDialog(BuildContext context, AppProvider provider) {
-    final truckController = TextEditingController();
     final stationController = TextEditingController();
     final locationController = TextEditingController();
     final amountController = TextEditingController();
@@ -500,6 +513,37 @@ class _FuelScreenState extends State<FuelScreen> {
             child: const Text('Save'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _GlassIconButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final Color iconColor;
+
+  const _GlassIconButton({
+    required this.onPressed,
+    required this.icon,
+    required this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.1),
+          ),
+        ),
+        child: Icon(icon, color: iconColor, size: 20),
       ),
     );
   }
