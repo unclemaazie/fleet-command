@@ -1,0 +1,51 @@
+{
+  "project": "FleetCommand",
+  "framework": "Flutter",
+  "architecture": "Provider Pattern",
+  "screens": [
+    "Splash Screen - Animated glassmorphism logo with progress indicator",
+    "Login Screen - Role-based authentication (Manager/Driver)",
+    "Dashboard - 6 KPI cards, weekly fuel bar chart, alerts, activity feed",
+    "Fleet Screen - Truck list with contract grouping, swipe-to-edit/delete",
+    "Fuel Screen - Fuel purchase logging with station/amount/cost/date tracking",
+    "Maintenance Screen - Service records with status filtering",
+    "Loads Screen - Product load tracking with pickup/dropoff locations",
+    "Reports Screen - Overview, fuel, maintenance, and load reports with charts",
+    "Profile Screen - User settings and logout",
+    "Truck Detail - Full truck history (fuel, maintenance, loads)",
+    "Driver Detail - License info, contact, assigned vehicle",
+    "Contract Detail - Client info, fleet, drivers, routes, loads"
+  ],
+  "features": [
+    "Dark theme with glassmorphism UI throughout",
+    "6-metric KPI grid on dashboard",
+    "Weekly fuel consumption bar chart (fl_chart)",
+    "Real-time activity feed with staggered animations",
+    "Contract-based organization",
+    "Swipe-to-edit/delete actions on fleet items",
+    "Status badges with color coding",
+    "Bottom navigation with glassmorphism effect",
+    "Demo data initialization with realistic fleet data",
+    "Role-based access (Manager/Driver login credentials)"
+  ],
+  "models": [
+    "User",
+    "Truck",
+    "Driver",
+    "Contract",
+    "FuelRecord",
+    "MaintenanceRecord",
+    "Load",
+    "Route",
+    "ActivityLog"
+  ],
+  "dependencies": [
+    "provider",
+    "fl_chart",
+    "intl",
+    "shared_preferences",
+    "uuid",
+    "flutter_slidable",
+    "flutter_animate"
+  ]
+}

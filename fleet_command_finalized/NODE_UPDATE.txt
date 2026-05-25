@@ -1,0 +1,9 @@
+Updated CI environment:
+- Node.js upgraded to v20
+- Flutter upgraded to 3.24 stable
+- GitHub Actions updated to latest v4 actions
+- CI caching enabled
+- Added flutter doctor validation
+- Added optional flutter tests
+
+This resolves deprecated Node.js runtime warnings in GitHub Actions.
