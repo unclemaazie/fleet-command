@@ -97,11 +97,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 width: 100,
                 padding: const EdgeInsets.all(12),
                 backgroundColor: isSelected
-                    ? const Color(0xFF00D4AA).withOpacity(0.2)
+                    ?  Color(0xFF00D4AA).withOpacity(0.2)
                     : null,
                 border: Border.all(
                   color: isSelected
-                      ? const Color(0xFF00D4AA).withOpacity(0.3)
+                      ?  Color(0xFF00D4AA).withOpacity(0.3)
                       : Colors.white.withOpacity(0.1),
                 ),
                 child: Column(
@@ -110,7 +110,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     Icon(
                       report['icon'] as IconData,
                       color: isSelected
-                          ? const Color(0xFF00D4AA)
+                          ?  Color(0xFF00D4AA)
                           : Colors.white.withOpacity(0.6),
                       size: 24,
                     ),
@@ -121,7 +121,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         fontSize: 12,
                         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                         color: isSelected
-                            ? const Color(0xFF00D4AA)
+                            ?  Color(0xFF00D4AA)
                             : Colors.white.withOpacity(0.6),
                       ),
                     ),
@@ -186,7 +186,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           'Net Profit',
           '\$${(app.totalLoadRevenue - app.totalFuelCost - app.totalMaintenanceCost).toStringAsFixed(0)}',
           Icons.trending_up,
-          const Color(0xFF7B61FF),
+           Color(0xFF7B61FF),
         ),
         _buildSummaryCard(
           'Active Trucks',
