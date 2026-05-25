@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import '../vendor/provider.dart';
-import '../vendor/chart.dart';
-import '../vendor/intl.dart';
+import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/glass_card.dart';
@@ -10,8 +7,6 @@ import '../widgets/kpi_card.dart';
 import '../widgets/bottom_nav.dart';
 import '../widgets/status_badge.dart';
 import '../widgets/animated_list_item.dart';
-
-import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -42,7 +37,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       body: Consumer2<AppProvider, AuthProvider>(
         builder: (context, appProvider, authProvider, child) {
-          return GradientBackground(
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
+              ),
+            ),
             child: SafeArea(
               child: CustomScrollView(
                 slivers: [
@@ -106,7 +108,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         Row(
           children: [
-            GlassIconButton(
+            _GlassIconButton(
               onPressed: () {},
               icon: Icons.notifications_outlined,
               iconColor: Colors.white70,
@@ -193,10 +195,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildFuelChart(AppProvider app) {
     final weeklyData = app.getWeeklyFuelConsumption();
-    final barData = weeklyData.entries.map((e) => BarData(label: e.key, value: e.value)).toList();
 
-    final maxY = weeklyData.values.isEmpty 
-        ? 100 
+    final maxY = weeklyData.values.isEmpty
+        ? 100.0
         : weeklyData.values.reduce((a, b) => a > b ? a : b) * 1.2;
 
     return GlassCard(
@@ -235,87 +236,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 20),
           SizedBox(
             height: 200,
-            child: SimpleSimpleBarChart(
-              data: weeklyData.entries.map((e) => BarData(label: e.key, value: e.value)).toList(),
-              maxY: maxY,
-            ),
-                    },
-                  ),
-                ),
-                titlesData: (
-                  show: true,
-                  bottomTitles: (
-                    sideTitles: (
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        final days = weeklyData.keys.toList();
-                        if (value.toInt() >= 0 && value.toInt() < days.length) {
-                          return Text(
-                            days[value.toInt()],
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
-                              fontSize: 11,
-                            ),
-                          );
-                        }
-                        return const Text('');
-                      },
+            child: weeklyData.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No fuel data available',
+                      style: TextStyle(color: Colors.white54),
+                    ),
+                  )
+                : CustomPaint(
+                    size: const Size(double.infinity, 200),
+                    painter: _BarChartPainter(
+                      data: weeklyData.values.toList(),
+                      labels: weeklyData.keys.toList(),
+                      maxY: maxY,
                     ),
                   ),
-                  leftTitles: (
-                    sideTitles: (
-                      showTitles: true,
-                      reservedSize: 40,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          value.toInt().toString(),
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.4),
-                            fontSize: 10,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  topTitles: const (sideTitles: (showTitles: false)),
-                  rightTitles: const (sideTitles: (showTitles: false)),
-                ),
-                gridData: (
-                  show: true,
-                  drawVerticalLine: false,
-                  horizontalInterval: maxY / 5,
-                      color: Colors.white.withOpacity(0.05),
-                      strokeWidth: 1,
-                    );
-                  },
-                ),
-                borderData: (show: false),
-                barGroups: spots.asMap().entries.map((entry) {
-                  return Simple(
-                    x: entry.key,
-                    barRods: [
-                      Simple(
-                        toY: entry.value.y,
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF00D4AA), Color(0xFF7B61FF)],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                        ),
-                        width: 22,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(6),
-                        ),
-                        backDrawRodData: BackgroundSimple(
-                          show: true,
-                          toY: maxY,
-                          color: Colors.white.withOpacity(0.03),
-                        ),
-                      ),
-                    ],
-                  );
-                }).toList(),
-              ),
-            ),
           ),
         ],
       ),
@@ -559,7 +494,122 @@ class _DashboardScreenState extends State<DashboardScreen> {
     } else if (diff.inHours < 24) {
       return '${diff.inHours}h ago';
     } else {
-      return DateFormat('MMM d, HH:mm').format(timestamp);
+      return '${timestamp.day} ${_monthName(timestamp.month)} ${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}';
     }
   }
+
+  String _monthName(int month) {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return months[month - 1];
+  }
+}
+
+// Inline GlassIconButton since it was used but not imported/defined
+class _GlassIconButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final Color iconColor;
+
+  const _GlassIconButton({
+    required this.onPressed,
+    required this.icon,
+    required this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.1),
+          ),
+        ),
+        child: Icon(icon, color: iconColor, size: 20),
+      ),
+    );
+  }
+}
+
+// Custom bar chart painter to replace the broken chart library usage
+class _BarChartPainter extends CustomPainter {
+  final List<double> data;
+  final List<String> labels;
+  final double maxY;
+
+  _BarChartPainter({
+    required this.data,
+    required this.labels,
+    required this.maxY,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (data.isEmpty) return;
+
+    final barWidth = (size.width / data.length) * 0.6;
+    final spacing = (size.width / data.length) * 0.4;
+    final chartHeight = size.height - 30;
+
+    for (int i = 0; i < data.length; i++) {
+      final barHeight = (data[i] / maxY) * chartHeight;
+      final x = i * (barWidth + spacing) + spacing / 2;
+      final y = size.height - barHeight - 20;
+
+      final rect = RRect.fromRectAndCorners(
+        Rect.fromLTWH(x, y, barWidth, barHeight),
+        topLeft: const Radius.circular(6),
+        topRight: const Radius.circular(6),
+      );
+
+      final paint = Paint()
+        ..shader = const LinearGradient(
+          colors: [Color(0xFF00D4AA), Color(0xFF7B61FF)],
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+        ).createShader(Rect.fromLTWH(x, y, barWidth, barHeight));
+
+      canvas.drawRRect(rect, paint);
+
+      // Draw label
+      final textStyle = TextStyle(
+        color: Colors.white.withOpacity(0.5),
+        fontSize: 10,
+      );
+      final textPainter = TextPainter(
+        text: TextSpan(text: labels[i], style: textStyle),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(x + barWidth / 2 - textPainter.width / 2, size.height - 14),
+      );
+    }
+
+    // Draw grid lines
+    final gridPaint = Paint()
+      ..color = Colors.white.withOpacity(0.05)
+      ..strokeWidth = 1;
+
+    for (int i = 0; i <= 4; i++) {
+      final y = (chartHeight / 4) * i;
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(size.width, y),
+        gridPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
