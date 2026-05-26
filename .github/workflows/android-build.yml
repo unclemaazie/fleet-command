@@ -42,8 +42,7 @@ jobs:
 
       - name: Decode keystore
         run: |
-         echo "${{ secrets.KEYSTORE_BASE64 }}" 
-         | base64 -d > android/app/upload-keystore.jks
+         printf '%s' "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
       - name: Build Release APK
         run: flutter build apk --release 
         env:
