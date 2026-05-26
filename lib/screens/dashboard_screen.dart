@@ -425,7 +425,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            log.details ?? 'No details'
+                            log.details ?? 'No details',
                             style: const TextStyle(
                               fontSize: 13,
                               color: Colors.white,
@@ -507,7 +507,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
-// Inline GlassIconButton since it was used but not imported/defined
 class _GlassIconButton extends StatelessWidget {
   final VoidCallback onPressed;
   final IconData icon;
@@ -539,7 +538,6 @@ class _GlassIconButton extends StatelessWidget {
   }
 }
 
-// Custom bar chart painter to replace the broken chart library usage
 class _BarChartPainter extends CustomPainter {
   final List<double> data;
   final List<String> labels;
@@ -579,7 +577,6 @@ class _BarChartPainter extends CustomPainter {
 
       canvas.drawRRect(rect, paint);
 
-      // Draw label
       final textStyle = TextStyle(
         color: Colors.white.withOpacity(0.5),
         fontSize: 10,
@@ -595,7 +592,6 @@ class _BarChartPainter extends CustomPainter {
       );
     }
 
-    // Draw grid lines
     final gridPaint = Paint()
       ..color = Colors.white.withOpacity(0.05)
       ..strokeWidth = 1;

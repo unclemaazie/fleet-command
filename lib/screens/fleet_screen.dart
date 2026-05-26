@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
-import '../vendor/provider.dart';
-import '../vendor/slidable.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import '../providers/app_provider.dart';
 import '../models/truck_model.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/status_badge.dart';
 import '../widgets/bottom_nav.dart';
 import '../widgets/animated_list_item.dart';
-
-import 'package:flutter/material.dart';
-
 
 class FleetScreen extends StatefulWidget {
   const FleetScreen({super.key});
@@ -41,7 +36,14 @@ class _FleetScreenState extends State<FleetScreen> {
               ? appProvider.trucks
               : appProvider.getTrucksByContract(_selectedContractId);
 
-          return GradientBackground(
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
+              ),
+            ),
             child: SafeArea(
               child: Column(
                 children: [
@@ -61,7 +63,7 @@ class _FleetScreenState extends State<FleetScreen> {
                                 color: Colors.white,
                               ),
                             ),
-                            GlassIconButton(
+                            _GlassIconButton(
                               onPressed: () => _showAddTruckDialog(context, appProvider),
                               icon: Icons.add,
                               iconColor: const Color(0xFF00D4AA),
@@ -88,11 +90,12 @@ class _FleetScreenState extends State<FleetScreen> {
                           index: index,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 12),
-                            child: SimpleSlidable(
-                              actions: [
-                                
+                            child: Slidable(
+                              endActionPane: ActionPane(
+                                motion: const ScrollMotion(),
+                                children: [
                                   SlidableAction(
-                                    onPressed: () => _showEditTruckDialog(context, appProvider, truck),
+                                    onPressed: (context) => _showEditTruckDialog(context, appProvider, truck),
                                     backgroundColor: const Color(0xFF7B61FF),
                                     foregroundColor: Colors.white,
                                     icon: Icons.edit,
@@ -102,7 +105,7 @@ class _FleetScreenState extends State<FleetScreen> {
                                     ),
                                   ),
                                   SlidableAction(
-                                    onPressed: () => _deleteTruck(context, appProvider, truck),
+                                    onPressed: (context) => _deleteTruck(context, appProvider, truck),
                                     backgroundColor: const Color(0xFFFF4757),
                                     foregroundColor: Colors.white,
                                     icon: Icons.delete,
@@ -112,6 +115,7 @@ class _FleetScreenState extends State<FleetScreen> {
                                     ),
                                   ),
                                 ],
+                              ),
                               child: GestureDetector(
                                 onTap: () => Navigator.pushNamed(
                                   context,
@@ -331,7 +335,6 @@ class _FleetScreenState extends State<FleetScreen> {
   }
 
   void _showAddTruckDialog(BuildContext context, AppProvider provider) {
-    // Implementation for adding truck
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -388,6 +391,37 @@ class _FleetScreenState extends State<FleetScreen> {
             child: const Text('Delete', style: TextStyle(color: Color(0xFFFF4757))),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _GlassIconButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final Color iconColor;
+
+  const _GlassIconButton({
+    required this.onPressed,
+    required this.icon,
+    required this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.1),
+          ),
+        ),
+        child: Icon(icon, color: iconColor, size: 20),
       ),
     );
   }
