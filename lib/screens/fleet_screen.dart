@@ -92,7 +92,7 @@ class _FleetScreenState extends State<FleetScreen> {
                               actions: [
                                 
                                   SlidableAction(
-                                    onPressed: (_) => _showEditTruckDialog(context, appProvider, truck),
+                                    onPressed: () => _showEditTruckDialog(context, appProvider, truck),
                                     backgroundColor: const Color(0xFF7B61FF),
                                     foregroundColor: Colors.white,
                                     icon: Icons.edit,
@@ -102,7 +102,7 @@ class _FleetScreenState extends State<FleetScreen> {
                                     ),
                                   ),
                                   SlidableAction(
-                                    onPressed: (_) => _deleteTruck(context, appProvider, truck),
+                                    onPressed: () => _deleteTruck(context, appProvider, truck),
                                     backgroundColor: const Color(0xFFFF4757),
                                     foregroundColor: Colors.white,
                                     icon: Icons.delete,
