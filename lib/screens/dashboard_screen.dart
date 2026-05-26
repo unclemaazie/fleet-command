@@ -425,7 +425,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            log.details,
+                            log.details ?? 'No details'
                             style: const TextStyle(
                               fontSize: 13,
                               color: Colors.white,
