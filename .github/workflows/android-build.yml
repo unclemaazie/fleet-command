@@ -43,8 +43,6 @@ jobs:
       - name: Decode keystore
         run: |
          printf '%s' "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
-      - name: Build Release APK
-        run: flutter build apk --release 
         env:
          KEYSTORE_PASSWORD:
           ${{ secrets.KEYSTORE_PASSWORD }}
@@ -52,6 +50,8 @@ jobs:
           ${{ secrets.KEY_PASSWORD }}
          KEY_ALIAS: 
           ${{ secrets.KEY_ALIAS }}
+      - name: Build Release APK
+        run: flutter build apk --release
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
