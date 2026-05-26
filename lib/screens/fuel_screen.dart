@@ -413,7 +413,7 @@ class _FuelScreenState extends State<FuelScreen> {
               TextField(
                 controller: stationController,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   hintText: 'Station Name',
                   hintStyle: TextStyle(color: Colors.white30),
                   prefixIcon: Icon(Icons.local_gas_station, color: Colors.white.withOpacity(0.5)),
@@ -423,7 +423,7 @@ class _FuelScreenState extends State<FuelScreen> {
               TextField(
                 controller: locationController,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   hintText: 'Location',
                   hintStyle: TextStyle(color: Colors.white30),
                   prefixIcon: Icon(Icons.location_on_outlined, color: Colors.white.withOpacity(0.5)),
@@ -434,7 +434,7 @@ class _FuelScreenState extends State<FuelScreen> {
                 controller: amountController,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   hintText: 'Amount (Liters)',
                   hintStyle: TextStyle(color: Colors.white30),
                   prefixIcon: Icon(Icons.water_drop_outlined, color: Colors.white.withOpacity(0.5)),
@@ -445,7 +445,7 @@ class _FuelScreenState extends State<FuelScreen> {
                 controller: costController,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   hintText: 'Cost per Liter',
                   hintStyle: TextStyle(color: Colors.white30),
                   prefixIcon: Icon(Icons.attach_money, color: Colors.white.withOpacity(0.5)),
@@ -456,7 +456,7 @@ class _FuelScreenState extends State<FuelScreen> {
                 controller: odometerController,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   hintText: 'Odometer Reading',
                   hintStyle: TextStyle(color: Colors.white30),
                   prefixIcon: Icon(Icons.speed_outlined, color: Colors.white.withOpacity(0.5)),
