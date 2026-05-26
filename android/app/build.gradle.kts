@@ -25,8 +25,6 @@ android {
         versionName = "1.0.0"
     }
 
-    // ... your existing config ...
-
     signingConfigs {
         create("release") {
             storeFile = file("upload-keystore.jks")
@@ -47,9 +45,6 @@ android {
             )
         }
     }
-}
-
-
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
